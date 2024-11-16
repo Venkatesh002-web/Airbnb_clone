@@ -12,9 +12,9 @@ import AccountNav from "./AccountNav";
 import PlacePage from "./pages/PlacePage";
 import BookingsPage from "./pages/BookingsPage";
 import BookingPage from "./pages/BookingPage";
-require('dotenv').config();
 
-axios.defaults.baseURL=process.env.REACT_APP_API_BASEURL;
+
+axios.defaults.baseURL="http://localhost:4000/api";
 axios.defaults.withCredentials=true;
 
 function App() {
