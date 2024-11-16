@@ -25,10 +25,8 @@ app.use(cors({
 }));
 
 
-if(process.env.API_PORT){
-app.listen(process.env.API_PORT
-);
-}
+app.listen(4000);
+
 
 
 mongoose.connect(process.env.MONGO_URL);
