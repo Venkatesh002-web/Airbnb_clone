@@ -4,6 +4,7 @@ import {useState,useEffect} from "react";
 import axios from "axios";
 import PlaceImg from "../PlaceImg";
 
+
 export default function PlacesPage(){
 const [places,setPlaces]=useState([]);
 useEffect(()=> {

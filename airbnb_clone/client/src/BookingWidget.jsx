@@ -16,6 +16,7 @@ export default function BookingWidget({place}) {
   useEffect(() => {
     if (user) {
       setName(user.name);
+
     }
   }, [user]);
 
@@ -31,8 +32,12 @@ export default function BookingWidget({place}) {
       price:numberOfNights * place.price,
     });
     const bookingId = response.data._id;
-    setRedirect(`/account/bookings/${bookingId}`);
-  }
+
+           setRedirect(`/account/bookings/${bookingId}`);
+
+
+    }
+
 
   if (redirect) {
     return <Navigate to={redirect} />

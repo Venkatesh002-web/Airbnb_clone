@@ -25,10 +25,11 @@ app.use(cors({
 }));
 
 
-
-app.listen(4000 ,() =>{
-console.log("Listening on port 4000")}
+if(process.env.API_PORT){
+app.listen(process.env.API_PORT
 );
+}
+
 
 mongoose.connect(process.env.MONGO_URL);
 console.log(process.env.MONGO_URL)
@@ -44,7 +45,7 @@ function getUserDataFromReq(req) {
 }
 
 
-app.post('/register',async(req,res) =>{
+app.post('/api/register',async(req,res) =>{
 var {name,email,password}=req.body;
 try{
 var userDoc= await User.create({
@@ -59,7 +60,7 @@ res.status(422).json(e);
 });
 
 
-app.post('/login',async (req,res)=>{
+app.post('/api/login',async (req,res)=>{
 var {email,password}=req.body;
 var userDoc= await User.findOne({email});
 if(userDoc){
@@ -81,7 +82,7 @@ res.json("not found")
 });
 
 
-app.get('/profile',(req,res) => {
+app.get('/api/profile',(req,res) => {
 const {token}=req.cookies;
 if(token){
 jwt.verify(token,jwtSecret,{},async(err,user) =>{
@@ -95,11 +96,11 @@ res.json(null);
 
 })
 
-app.post('/logout',(req,res) =>{
+app.post('/api/logout',(req,res) =>{
 res.cookie('token','').json(true);});
 
 
-app.post('/upload-by-link',async (req,res) =>{
+app.post('/api/upload-by-link',async (req,res) =>{
 const {link}=req.body;
 const newName='photo'+Date.now()+'.jpg';
 await imageDownloader.image({
@@ -111,8 +112,8 @@ res.json(newName);
 console.log({__dirname});
 
 
-const photosMiddleware=multer({dest:'uploads/'});
-app.post('/upload',photosMiddleware.array('photos',100),(req,res) => {
+const photosMiddleware=multer({dest:'/api/uploads/'});
+app.post('/api/upload',photosMiddleware.array('photos',100),(req,res) => {
 const uploadedFiles=[];
 for(let i=0;i<req.files.length;i++){
 const {path,originalname}=req.files[i];
@@ -120,7 +121,7 @@ const parts=originalname.split('.');
 const ext=parts[parts.length-1];
 const newPath=path+'.'+ext;
 fs.renameSync(path,newPath);
-uploadedFiles.push(newPath.replace('uploads\\',''));
+uploadedFiles.push(newPath.replace('api\\uploads\\',''));
 }
 res.json(uploadedFiles);
 
@@ -128,7 +129,7 @@ res.json(uploadedFiles);
 });
 
 
-app.post('/places', (req,res) => {
+app.post('/api/places', (req,res) => {
 const {token}=req.cookies;
 const{
 title,address,addedPhotos,
@@ -148,7 +149,7 @@ res.json(placeDoc);
 
 });
 
-app.get('/user-places',(req,res) => {
+app.get('/api/user-places',(req,res) => {
 const {token}=req.cookies;
 jwt.verify(token,jwtSecret,{},async (err,userData) =>{
 const {id} = userData;
@@ -156,12 +157,12 @@ res.json( await Place.find({owner:id}));
 })
 });
 
-app.get('/places/:id', async (req,res)=>{
+app.get('/api/places/:id', async (req,res)=>{
 const {id}=req.params;
 res.json(await Place.findById(id));
 });
 
-app.put('/places', async (req,res) => {
+app.put('/api/places', async (req,res) => {
 const {token}=req.cookies;
 const{
 id,title,address,addedPhotos,
@@ -184,11 +185,11 @@ res.json("ok");
 
 });
 
-app.get('/places', async (req,res) => {
+app.get('/api/places', async (req,res) => {
 res.json(await Place.find());
 })
 
-app.post('/bookings', async (req,res) => {
+app.post('/api/bookings', async (req,res) => {
 const userData = await getUserDataFromReq(req);
 const {
      place,checkIn,checkOut,
@@ -205,7 +206,7 @@ const {
      });
 
 
-app.get('/bookings', async (req,res) => {
+app.get('/api/bookings', async (req,res) => {
 
   const userData = await getUserDataFromReq(req);
   res.json( await Booking.find({user:userData.id}).populate('place') );

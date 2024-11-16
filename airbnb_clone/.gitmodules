@@ -1,0 +1,3 @@
+[submodule "Airbnb_booking_app"]
+	path = Airbnb_booking_app
+	url = https://github.com/Venkatesh002-web/Airbnb_booking_app.git
